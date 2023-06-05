@@ -39,7 +39,7 @@ export default async function handler(req, res) {
 				})
 				const transcript = await thirdPartyService.getYoutubeTranscript(prompt)
 				const vectorStore = await HNSWLib([{ pageContent: transcript }], new OpenAIEmbeddings())
-				const directory = 'C:/dev_ai/Langchain/openai-javascript-course-1-start-here/data/vectors'
+				const directory = 'C:/dev_ai/Langchain/NextLangchain/data/vectors'
 				await vectorStore.save(directory)
 
 				const loadVectorStore = await HNSWLib.load(directory, new OpenAIEmbeddings())

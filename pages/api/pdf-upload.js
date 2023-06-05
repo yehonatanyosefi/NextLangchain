@@ -4,7 +4,7 @@ import { dbService } from '../services/db.service'
 export default async function handler(req, res) {
 	if (req.method === 'GET') {
 		try {
-			const path = `C:/dev_ai/Langchain/openai-javascript-course-1-start-here/data/document_loaders/naval-ravikant-book.pdf`
+			const path = `C:/dev_ai/Langchain/NextLangchain/data/document_loaders/naval-ravikant-book.pdf`
 			await dbService.upload(path)
 			console.log(`uploaded success`)
 			// upload documents to Pinecone
