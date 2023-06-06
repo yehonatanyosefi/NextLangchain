@@ -14,10 +14,7 @@ export default async function handler(req, res) {
 			throw new Error('No input')
 		}
 
-		console.log('input received:', input)
-
-		// Search!
-		const response = await llmService.query(input)
+		const response = await llmService.query(input, req)
 
 		return res.status(200).json({ result: response })
 	} catch (error) {

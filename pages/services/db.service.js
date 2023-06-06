@@ -4,6 +4,8 @@ import { Document } from 'langchain/document'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
 import { CharacterTextSplitter } from 'langchain/text_splitter'
+import { VectorStoreRetrieverMemory } from 'langchain/memory'
+import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 
 export const dbService = {
 	upload,
@@ -72,10 +74,20 @@ async function uploadToPinecone(docs) {
 	return true
 }
 
-async function getVectorStore() {
+async function getVectorStore(memoryOption = false) {
 	const clientIndex = await initClient()
 	const vectorStore = await PineconeStore.fromExistingIndex(new OpenAIEmbeddings(), {
 		pineconeIndex: clientIndex,
 	})
-	return vectorStore
+
+	if (!memoryOption) {
+		return { vectorStore, memory: false }
+	}
+
+	const memory = new VectorStoreRetrieverMemory({
+		vectorStoreRetriever: vectorStore.asRetriever(1),
+		memoryKey: 'history',
+	})
+
+	return { vectorStore, memory }
 }
