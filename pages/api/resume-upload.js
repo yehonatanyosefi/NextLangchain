@@ -8,29 +8,22 @@
  * Dependencies: npm install pdf-parse
  */
 
-import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
-import { CharacterTextSplitter } from "langchain/text_splitter";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { PineconeStore } from "langchain/vectorstores/pinecone";
-import { PineconeClient } from "@pinecone-database/pinecone";
-import { loadSummarizationChain } from "langchain/chains";
-import { OpenAI } from "langchain/llms/openai";
+import { DirectoryLoader } from 'langchain/document_loaders/fs/directory'
+import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
+import { CharacterTextSplitter } from 'langchain/text_splitter'
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
+import { PineconeStore } from 'langchain/vectorstores/pinecone'
+import { PineconeClient } from '@pinecone-database/pinecone'
+import { loadSummarizationChain } from 'langchain/chains'
+import { OpenAI } from 'langchain/llms/openai'
 
 export default async function handler(req, res) {
-  // Grab the prompt from the url (?prompt=[value])
-  //   console.log(process.env.PINECONE_API_KEY);
-  //   console.log(process.env.PINECONE_ENVIRONMENT);
-  //   console.log(process.env.PINECONE_INDEX);
-  // Always use a try catch block to do asynchronous requests and catch any errors
-  try {
+	// Grab the prompt from the url (?prompt=[value])
+	try {
 		// Load the directory
-		const loader = new DirectoryLoader(
-			'/Users/shawnesquivel/Desktop/openai-javascript-course/data/resumes',
-			{
-				'.pdf': (path) => new PDFLoader(path, '/pdf'),
-			}
-		)
+		const loader = new DirectoryLoader('C:/dev_ai/Langchain/NextLangchain-main/data/resumes', {
+			'.pdf': (path) => new PDFLoader(path, '/pdf'),
+		})
 
 		const docs = await loader.load()
 		//   3
@@ -53,7 +46,6 @@ export default async function handler(req, res) {
 
 		// reduce the metadata and make it more searchable
 		const reducedDocs = splitDocs.map((doc) => {
-			// ["Users", "shawnesquivel", ... "resume_aubrey_graham.pdf"]
 			const fileName = doc.metadata.source.split('/').pop()
 			// ["resume", "aubrey", "graham.pdf"]
 			const [_, firstName, lastName] = fileName.split('_')
