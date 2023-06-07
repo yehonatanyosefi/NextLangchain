@@ -81,13 +81,13 @@ async function getVectorStore(memoryOption = false) {
 	})
 
 	if (!memoryOption) {
-		return { vectorStore, memory: false }
+		return { vectorStore, vectorMemory: false }
 	}
 
-	const memory = new VectorStoreRetrieverMemory({
+	const vectorMemory = new VectorStoreRetrieverMemory({
 		vectorStoreRetriever: vectorStore.asRetriever(1),
 		memoryKey: 'history',
 	})
 
-	return { vectorStore, memory }
+	return { vectorStore, vectorMemory }
 }

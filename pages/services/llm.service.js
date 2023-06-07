@@ -3,36 +3,26 @@ import { OpenAI } from 'langchain/llms/openai'
 import { dbService } from './db.service'
 import { BufferMemory } from 'langchain/memory'
 
-import express from 'express'
-import session from 'express-session'
 import SSE from 'express-sse'
 
 const sse = new SSE()
 
 const LLM_MODEL = 'gpt-3.5-turbo'
 
-const app = express()
-
-app.use(
-	session({
-		secret: process.env.SESSION_KEY,
-		resave: false,
-		saveUninitialized: true,
-	})
-)
+let gMemory = null
 
 export const llmService = {
 	query,
 }
 
-async function query(
+async function query({
 	prompt,
 	req,
 	queryVector = false,
 	memoryOption = false,
 	temperature = 0.1,
-	streaming = false
-) {
+	streaming = false,
+}) {
 	try {
 		const llmOptions = {
 			modelName: LLM_MODEL,
@@ -50,8 +40,8 @@ async function query(
 		}
 		const model = new OpenAI(llmOptions)
 		const chain = !queryVector
-			? getLLMChain(model, memoryOption)
-			: await getVectorChain(model, memoryOption)
+			? getLLMChain(model, req, memoryOption)
+			: await getVectorChain(model, req, memoryOption)
 		const response = await chain.call({ query: prompt })
 		sse.send(null, 'end')
 		return response
@@ -63,11 +53,15 @@ async function query(
 
 async function getVectorChain(model, req, memoryOption = false) {
 	try {
-		const { vectorStore, memory: vectorMemory } = await dbService.getVectorStore(memoryOption)
-		if (!req.session.vectorMemory) {
-			req.session.vectorMemory = vectorMemory
+		const { vectorStore, vectorMemory } = await dbService.getVectorStore(memoryOption)
+		if (!gMemory) {
+			gMemory = vectorMemory
 		}
-		const vectorSesMemory = req.session.vectorMemory
+		const vectorSesMemory = gMemory
+		// if (!req.session.vectorMemory) {
+		// 	req.session.vectorMemory = vectorMemory
+		// }
+		// const vectorSesMemory = req.session.vectorMemory
 		const vectorOptions = {
 			k: 1,
 			returnSourceDocuments: true,
@@ -81,9 +75,13 @@ async function getVectorChain(model, req, memoryOption = false) {
 }
 
 function getLLMChain(model, req, memoryOption = false) {
-	if (!req.session.memory) {
-		req.session.memory = new BufferMemory()
+	if (!gMemory) {
+		gMemory = new BufferMemory()
 	}
-	const memory = req.session.memory
+	const memory = gMemory
+	// if (!req.session.memory) {
+	// 	req.session.memory = new BufferMemory()
+	// }
+	// const memory = req.session.memory
 	return new ConversationChain({ llm: model, memory: memoryOption ? memory : undefined })
 }
