@@ -5,7 +5,6 @@ import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
 import { CharacterTextSplitter } from 'langchain/text_splitter'
 import { VectorStoreRetrieverMemory } from 'langchain/memory'
-import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 
 export const dbService = {
 	upload,
