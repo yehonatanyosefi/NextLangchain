@@ -24,7 +24,9 @@ async function upload(path) {
 }
 
 async function loadDocs(path) {
-	const loader = new PDFLoader(path)
+	const loader = new PDFLoader(path, {
+		pdfjs: () => import('pdfjs-dist'),
+	})
 	const docs = await loader.load()
 	if (!docs) {
 		throw new Error('No documents found.')
