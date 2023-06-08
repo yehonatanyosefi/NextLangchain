@@ -11,7 +11,7 @@ const LOCAL_VECTOR_STORE_DIRECTORY = 'C:/dev_ai/Langchain/NextLangchain/data/vec
 
 export default async function handler(req, res) {
 	if (req.method === 'POST') {
-		const { prompt, firstMsg } = req.body
+		let { prompt, firstMsg } = req.body
 		try {
 			let response = null
 			if (firstMsg) {
