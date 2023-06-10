@@ -1,5 +1,5 @@
 import { OpenAI } from 'langchain/llms/openai'
-import { aiController } from '../contollers/ai.controller'
+import { aiController } from '../../contollers/ai.controller'
 import SSE from 'express-sse'
 
 const sse = new SSE()

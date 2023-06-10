@@ -2,7 +2,7 @@ import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { ConversationalRetrievalQAChain } from 'langchain/chains'
 import { HNSWLib } from 'langchain/vectorstores/hnswlib'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
-import { aiController } from '../contollers/ai.controller'
+import { aiController } from '../../contollers/ai.controller'
 
 let gChain = null
 let gChatHistory = []

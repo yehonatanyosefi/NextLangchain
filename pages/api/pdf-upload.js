@@ -1,4 +1,4 @@
-import { aiController } from '../contollers/ai.controller'
+import { aiController } from '../../contollers/ai.controller'
 
 export default async function handler(req, res) {
 	if (req.method === 'GET') {
