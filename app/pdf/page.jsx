@@ -99,7 +99,6 @@ const PDFLoader = () => {
 	// The component returns a two column layout with various child components
 	return (
 		<>
-			<Title emoji="💬" headingText="PDF-GPT" />
 			<TwoColumnLayout
 				leftChildren={
 					<>

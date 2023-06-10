@@ -20,7 +20,7 @@ const Input = ({
         value={inputValue}
         onChange={onChange}
         placeholder={placeHolderText || "Input"}
-        className={`py-2 px-4 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded w-${labelWidth}`} // Adjust the width as per your preference
+        className={`py-2 px-4 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded w-${labelWidth}`}
       />
     </div>
   );

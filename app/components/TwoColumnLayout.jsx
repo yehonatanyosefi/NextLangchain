@@ -1,4 +1,3 @@
-import React from "react";
 
 const TwoColumnLayout = ({ leftChildren, rightChildren }) => (
   <div className="flex flex-col justify-between  md:flex-row md:justify-between">

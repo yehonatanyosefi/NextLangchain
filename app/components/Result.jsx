@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Result = ({ data }) => {
 	return (
 		<div className="bg-gray-100 p-6 rounded shadow mb-4">

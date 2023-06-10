@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import styles from './hamburgerMenu.css'
 import Image from 'next/image'
-import { pressStart2P, sourceCodePro, instrumentSans } from '../styles/fonts'
+import { pressStart2P, sourceCodePro } from '../styles/fonts'
 
 const HamburgerMenu = () => {
 	const [isOpen, setIsOpen] = useState(false)
@@ -159,24 +159,6 @@ const HamburgerMenu = () => {
 									</div>
 								</div>
 								<p className={`text-m font-bold text-gray-200 ${sourceCodePro.className}`}>RoboHR</p>
-							</span>
-						</a>
-					</li>
-					<li className="flex flex-col gap-4">
-						<a href="chatcompletions">
-							<span>
-								<div className=" rounded-xl overflow-hidden h-40 w-32 drop-shadow">
-									<div className="absolute inset-0">
-										<Image
-											src="/assets/images/tools.png"
-											alt="robot reading newspaper"
-											fill
-											sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-											style={{ objectFit: 'cover' }}
-										/>
-									</div>
-								</div>
-								<p className={`text-m font-bold text-gray-200 ${sourceCodePro.className}`}>Testing</p>
 							</span>
 						</a>
 					</li>

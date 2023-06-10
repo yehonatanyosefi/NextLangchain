@@ -7,9 +7,9 @@ import {
 	HumanMessagePromptTemplate,
 	SystemMessagePromptTemplate,
 } from 'langchain/prompts'
-import extractVideoId from '../../utils/extractVideoId'
-import getVideoMetaData from '../../utils/getVideoMetaData'
-import ResearchAgent from '../../agents/ResearchAgent'
+import { agentService } from '../services/agent.service'
+
+import { thirdPartyService } from '../services/third-party.service'
 
 // Global Variables
 let chain = null
@@ -18,19 +18,13 @@ let transcript = ''
 let metadataString = ''
 let research = null
 
-// Initialize Chain with Data
 const initChain = async (transcript, metadataString, research, topic) => {
 	try {
-		// do stuff
 		const llm = new ChatOpenAI({
 			temperature: 0.7,
 			modelName: 'gpt-3.5-turbo',
 		})
 
-		console.log(`Initializing Chat Prompt`)
-
-		// For chat models, we provide a `ChatPromptTemplate` class that can be used to format chat prompts.
-		// This allows us to set the template that the bot sees every time
 		const chatPrompt = ChatPromptTemplate.fromPromptMessages([
 			SystemMessagePromptTemplate.fromTemplate(
 				'You are a helpful social media assistant that provides research, new content, and advice to me. \n You are given the transcript of the video: {transcript} \n and video metadata: {metadata} as well as additional research: {research}'
@@ -63,7 +57,7 @@ const initChain = async (transcript, metadataString, research, topic) => {
 		return response
 	} catch (error) {
 		console.error(`An error occurred during the initialization of the Chat Prompt: ${error.message}`)
-		throw error // rethrow the error to let the calling function know that an error occurred
+		throw error
 	}
 }
 
@@ -86,26 +80,23 @@ export default async function handler(req, res) {
 	if (firstMsg) {
 		console.log('Received URL')
 		try {
-			const videoId = extractVideoId(prompt)
+			const videoId = thirdPartyService.extractVideoId(prompt)
 			// API call for video transcript (same as last video, but we just grab the array and flatten it into a variable)[{text:" "},{ text: ""}]
-			const transcriptResponse = await YoutubeTranscript.fetchTranscript(prompt)
-			transcriptResponse.forEach((line) => {
-				transcript += line.text
-			})
+			const transcriptResponse = await thirdPartyService.getYoutubeTranscript(prompt)
 			// Some error handling
 			if (!transcriptResponse) {
 				return res.status(400).json({ error: 'Failed to get transcript' })
 			}
 
 			// API call for video metadata –– go to VideoMetaData and explain this
-			const metadata = await getVideoMetaData(videoId)
+			const metadata = await thirdPartyService.getYoutubeVideoMetaData(videoId)
 
 			// JSON object { [], [], [] } , null (no characters between), and use 2 spaces for indentation
 			metadataString = JSON.stringify(metadata, null, 2)
 			console.log({ metadataString })
 
 			// ResearchAgent
-			research = await ResearchAgent(topic)
+			research = await agentService.ResearchAgent(topic)
 
 			console.log({ research })
 

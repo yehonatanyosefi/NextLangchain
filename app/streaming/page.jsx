@@ -65,7 +65,6 @@ const Streaming = () => {
 	}, [source])
 	return (
 		<>
-			<Title emoji="💭" headingText="Streaming" />
 			<TwoColumnLayout
 				leftChildren={
 					<>

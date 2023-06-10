@@ -1,11 +1,11 @@
-import { dbService } from '../services/db.service'
+import { aiController } from '../contollers/ai.controller'
 
 // Example: https://js.langchain.com/docs/modules/indexes/document_loaders/examples/file_loaders/pdf
 export default async function handler(req, res) {
 	if (req.method === 'GET') {
 		try {
 			const path = `C:/dev_ai/Langchain/NextLangchain-main/data/document_loaders/naval-ravikant-book.pdf`
-			await dbService.upload(path)
+			await aiController.uploadPdf(path)
 			console.log(`uploaded success`)
 			// upload documents to Pinecone
 			return res.status(200).json({ result: docs })
