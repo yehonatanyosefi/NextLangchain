@@ -7,9 +7,9 @@ import {
 	HumanMessagePromptTemplate,
 	SystemMessagePromptTemplate,
 } from 'langchain/prompts'
-import { agentService } from '../services/agent.service'
+import { agentService } from '../../services/agent.service'
 
-import { thirdPartyService } from '../services/third-party.service'
+import { thirdPartyService } from '../../services/third-party.service'
 
 // Global Variables
 let chain = null

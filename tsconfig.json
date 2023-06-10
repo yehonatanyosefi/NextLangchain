@@ -21,7 +21,7 @@
 		"strictNullChecks": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/utils/*": ["pages/services/langchain/utils/*"]
+			"@/utils/*": ["services/langchain/utils/*"]
 		}
 	},
 	"include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],
