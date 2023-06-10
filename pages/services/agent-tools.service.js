@@ -3,8 +3,6 @@ import { WebBrowser } from 'langchain/tools/webbrowser'
 import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { dbService } from './db.service'
 
-const BASE_URL = 'http://localhost:3000/agents'
-
 export const agentToolsService = {
 	SerpAPITool,
 	WebBrowserTool,
@@ -12,7 +10,6 @@ export const agentToolsService = {
 
 function SerpAPITool() {
 	const serpAPI = new SerpAPI(process.env.SERPAPI_API_KEY, {
-		baseUrl: BASE_URL,
 		location: 'Israel',
 		hl: 'en',
 		gl: 'us',
