@@ -1,6 +1,4 @@
 /** @type {import('next').NextConfig} */
-// https://js.langchain.com/docs/getting-started/install#vercel--nextjs
-// To use LangChain with Next.js (either with app/ or pages/), add the following to your next.config.js to enable support for WebAssembly modules (which is required by the tokenizer library @dqbd/tiktoken):
 const nextConfig = {
 	// webpack(config) {
 	// 	config.experiments = {
@@ -15,8 +13,6 @@ const nextConfig = {
 		webpackConfig.externals['node:fs'] = 'commonjs node:fs'
 
 		webpackConfig.plugins.push(
-			// Remove node: from import specifiers, because Next.js does not yet support node: scheme
-			// https://github.com/vercel/next.js/issues/28774
 			new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
 				resource.request = resource.request.replace(/^node:/, '')
 			})
