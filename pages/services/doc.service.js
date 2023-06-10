@@ -31,9 +31,10 @@ async function getReducedText(text, chunkSize = 1000, chunkOverlap = 100) {
 }
 
 async function loadDocs(path) {
-	const loader = new PDFLoader(path, {
-		pdfjs: () => import('pdfjs-dist/legacy/build/pdf.js'),
-	})
+	// const loader = new PDFLoader(path, {
+	// 	pdfjs: () => import('pdfjs-dist/legacy/build/pdf.js'),
+	// })
+	const loader = new PDFLoader(path)
 	const docs = await loader.load()
 	if (!docs) {
 		throw new Error('No documents found.')

@@ -22,7 +22,7 @@ export default function ChatOptions({ chatOptions, handleChatOptionsChange }) {
 			handleChange: () => handleChatOptionsChange({ temperature: temperature > 0 ? 0 : 0.9 }),
 		},
 		{
-			optionName: 'Use Agent:',
+			optionName: 'Use Agent',
 			isChecked: useAgent,
 			handleChange: () => handleChatOptionsChange({ useAgent: !useAgent }),
 		},
