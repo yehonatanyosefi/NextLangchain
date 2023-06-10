@@ -1,7 +1,5 @@
 import { aiController } from '../contollers/ai.controller'
 
-let gFirstMsg = true
-
 export default async function handler(req, res) {
 	try {
 		if (req.method !== 'POST') {
@@ -15,16 +13,13 @@ export default async function handler(req, res) {
 			throw new Error('No input')
 		}
 
-		if (gFirstMsg) {
-			const queryOptions = {
-				queryVector: true,
-				memoryOption: false,
-				temperature: 0.1,
-				streaming: false,
-			}
-			await aiController.initializeVars(queryOptions)
-			gFirstMsg = false
+		const queryOptions = {
+			queryVector: true,
+			memoryOption: false,
+			temperature: 0.1,
+			streaming: false,
 		}
+		await aiController.initializeVars(queryOptions)
 
 		const response = await aiController.query(input)
 

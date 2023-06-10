@@ -1,19 +1,10 @@
 'use client'
-
-import React, { useState } from 'react'
+import { useState } from 'react'
 import PageHeader from '../components/PageHeader'
 import PromptBox from '../components/PromptBox'
 import ResultWithSources from '../components/ResultWithSources'
-import Title from '../components/Title'
 import TwoColumnLayout from '../components/TwoColumnLayout'
 
-/**
- *
- * MODULE 4: YOUTUBE CHATBOT:
- *
- * Start with the UI.. no need to recreate!
- *
- *  */
 const VideoChat = () => {
 	// We'll set a default YouTube video so we don't have to copy and paste this every time
 	const [prompt, setPrompt] = useState('https://www.youtube.com/watch?v=0lJKucu6HJc')
@@ -53,7 +44,6 @@ const VideoChat = () => {
 				body: JSON.stringify({ prompt: promptToSend, firstMsg }),
 			})
 
-			console.log({ response })
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`)
 			}
@@ -81,13 +71,11 @@ const VideoChat = () => {
 		<>
 			<TwoColumnLayout
 				leftChildren={
-					<>
-						<PageHeader
-							heading="Talk to Your Videos"
-							boldText="This tool lets you chat with your YouTube videos. "
-							description="This tool uses the YouTube API, Text Splitters, and the Conversational Retrieval QA CHain.  Head over to Module X to get started!"
-						/>
-					</>
+					<PageHeader
+						heading="Talk to Your Videos"
+						boldText="This tool lets you chat with your YouTube videos. "
+						description="This tool uses the YouTube API, Text Splitters, and the Conversational Retrieval QA CHain.  Head over to Module X to get started!"
+					/>
 				}
 				rightChildren={
 					<>

@@ -1,32 +1,36 @@
 import { OpenAI } from 'langchain/llms/openai'
+import { aiController } from '../contollers/ai.controller'
 import SSE from 'express-sse'
 
 const sse = new SSE()
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
 	if (req.method === 'POST') {
-		const { input } = req.body
+		const { input, options } = req.body
 
 		if (!input) {
 			throw new Error('No input')
 		}
-		// Initialize model
+		const { streaming } = options
 		const chat = new OpenAI({
-			streaming: true,
-			callbacks: [
-				{
-					handleLLMNewToken(token) {
-						sse.send(token, 'newToken')
-					},
-				},
-			],
+			streaming,
+			callbacks: !streaming
+				? []
+				: [
+						{
+							handleLLMNewToken(token) {
+								sse.send(token, 'newToken')
+							},
+						},
+				  ],
 		})
+		// await aiController.initializeVars(options)
 
-		// create the prompt
 		const prompt = `Create me a short rap about my name and city. Make it funny and punny. Name: ${input}`
 
-		console.log({ prompt })
-		// call frontend to backend
+		// const response = await aiController.query(prompt)
+		// return res.status(200).json({ response })
+
 		chat.call(prompt).then(() => {
 			sse.send(null, 'end')
 		})

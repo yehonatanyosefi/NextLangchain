@@ -2,27 +2,31 @@ import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 
 const MessageItem = ({ message, pngFile, isLast }) => {
-	const userImage = '/assets/images/green-square.png'
+	const userImage = '/assets/images/person.png'
 	const botImage = `/assets/images/${pngFile}.png`
 	const [showSources, setShowSources] = useState(false)
 
+	const messageBackground = message.type === 'user' ? 'bg-blue-200' : 'bg-green-200'
+	const messageBorderStyle = 'rounded-lg p-3'
+
 	return (
 		<div className={`flex flex-col ${isLast ? 'flex-grow' : ''}`}>
-			<div className="flex mb-4">
-				<div className="rounded mr-4 h-10 w-10 relative overflow-hidden whitespace-pre-line">
+			<div className="flex mb-4 items-start">
+				<div
+					style={{ width: '40px', height: '40px', position: 'relative' }}
+					className="overflow-hidden rounded flex-shrink-0">
 					<Image
 						src={message.type === 'user' ? userImage : botImage}
 						alt={`${message.type}'s profile`}
-						width={32}
-						height={32}
 						className="rounded"
-						priority
-						unoptimized
+						fill
+						style={{ objectFit: 'cover' }}
+						sizes="5vw"
 					/>
 				</div>
-				<p className={`${message.type === 'user' ? 'user' : 'bot'} whitespace-pre-line`}>
-					{message.text}
-				</p>
+				<div className={`${messageBackground} ${messageBorderStyle} ml-2`}>
+					<p className={`whitespace-pre-line`}>{message.text}</p>
+				</div>
 			</div>
 
 			{message.sourceDocuments && (
@@ -67,7 +71,7 @@ const ResultWithSources = ({ messages, pngFile, maxMsgs }) => {
 		<div
 			ref={messagesContainerRef}
 			className={`bg-white p-10 rounded-3xl shadow-lg mb-8 overflow-y-auto h-[500px] max-h-[500px] flex flex-col space-y-4 ${
-				messages.length < maxMsgToScroll && 'justify-end'
+				messages?.length < maxMsgToScroll && 'justify-end'
 			}`}>
 			{messages &&
 				messages.map((message, index) => (

@@ -1,14 +1,15 @@
 import { PineconeClient } from '@pinecone-database/pinecone'
 import { PineconeStore } from 'langchain/vectorstores/pinecone'
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
-import { VectorStoreRetrieverMemory } from 'langchain/memory'
+
+const EMBEDDING = new OpenAIEmbeddings()
+let gClientIndex = null
 
 export const dbService = {
 	getVectorStore,
 	uploadToPinecone,
+	EMBEDDING,
 }
-
-let gClientIndex = null
 
 async function uploadToPinecone(inputs) {
 	if (!gClientIndex) gClientIndex = await _initClient()
@@ -21,14 +22,14 @@ async function uploadToPinecone(inputs) {
 }
 
 async function uploadDocs(docs) {
-	await PineconeStore.fromDocuments(docs, new OpenAIEmbeddings(), {
+	await PineconeStore.fromDocuments(docs, EMBEDDING, {
 		pineconeIndex: gClientIndex,
 	})
 	return true
 }
 
 async function uploadTexts(texts) {
-	await PineconeStore.fromTexts(texts, [], new OpenAIEmbeddings(), {
+	await PineconeStore.fromTexts(texts, [], EMBEDDING, {
 		pineconeIndex: gClientIndex,
 	})
 	return true
@@ -36,7 +37,7 @@ async function uploadTexts(texts) {
 
 async function getVectorStore(memoryOption = false) {
 	if (!gClientIndex) gClientIndex = await _initClient()
-	const vectorStore = await PineconeStore.fromExistingIndex(new OpenAIEmbeddings(), {
+	const vectorStore = await PineconeStore.fromExistingIndex(EMBEDDING, {
 		pineconeIndex: gClientIndex,
 	})
 	return vectorStore

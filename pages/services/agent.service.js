@@ -13,7 +13,7 @@ export const agentService = {
 	ResearchAgent,
 }
 
-const ResearchAgent = async (topic) => {
+async function ResearchAgent(topic) {
 	try {
 		// This agent can browse the web and search google
 		const { SerpAPITool, WebBrowserTool } = agentToolsService

@@ -1,7 +1,7 @@
 import { SerpAPI } from 'langchain/tools'
 import { WebBrowser } from 'langchain/tools/webbrowser'
 import { ChatOpenAI } from 'langchain/chat_models/openai'
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
+import { dbService } from './db.service'
 
 const BASE_URL = 'http://localhost:3000/agents'
 
@@ -24,7 +24,7 @@ function SerpAPITool() {
 
 function WebBrowserTool() {
 	const model = new ChatOpenAI({ temperature: 0 })
-	const embeddings = new OpenAIEmbeddings({})
+	const embeddings = dbService.EMBEDDING
 
 	const browser = new WebBrowser({ model, embeddings })
 	browser.returnDirect = true

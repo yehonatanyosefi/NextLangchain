@@ -1,8 +1,8 @@
 import { VectorDBQAChain, ConversationChain, ConversationalRetrievalQAChain } from 'langchain/chains'
-import { OpenAI } from 'langchain/llms/openai'
+import { ChatOpenAI } from 'langchain/chat_models/openai'
 import { dbService } from './db.service'
 import { BufferMemory } from 'langchain/memory'
-
+import { utilService } from './util.service'
 import SSE from 'express-sse'
 
 const sse = new SSE()
@@ -13,6 +13,7 @@ const MEMORY_TYPE = new BufferMemory()
 let gModel = null
 let gMemory = null
 let gChain = null
+let gOptions = null
 let gCallType = 'query'
 const gChatHistory = []
 
@@ -27,7 +28,7 @@ async function query(prompt) {
 		// const augmentedPrompt = !gMemory ? prompt : `History:${gChatHistory}\n${prompt}`
 		const response = await gChain.call({ [gCallType]: prompt, chat_history: gChatHistory })
 		gChatHistory.push({ assistant: response.text })
-		sse.send(null, 'end')
+		if (gOptions?.streaming) sse.send(null, 'end')
 		return response
 	} catch (error) {
 		console.error('An error occurred while querying:', error)
@@ -35,11 +36,11 @@ async function query(prompt) {
 	}
 }
 
-async function getConversationalRetrievalChain(model, memoryOption = false) {
+async function getConversationalRetrievalChain() {
 	try {
-		const vectorStore = await dbService.getVectorStore(memoryOption)
+		const vectorStore = await dbService.getVectorStore(gMemory ? true : false)
 		gCallType = 'question'
-		return ConversationalRetrievalQAChain.fromLLM(model, vectorStore.asRetriever(), {
+		return ConversationalRetrievalQAChain.fromLLM(gModel, vectorStore.asRetriever(), {
 			verbose: false,
 		})
 	} catch (error) {
@@ -47,23 +48,27 @@ async function getConversationalRetrievalChain(model, memoryOption = false) {
 		throw error
 	}
 }
-async function getVectorChain(model, memoryOption = false) {
+async function getVectorChain() {
 	try {
 		const vectorStore = await dbService.getVectorStore(memoryOption)
 		const vectorOptions = {
 			k: 1,
 			returnSourceDocuments: true,
-			memory: memoryOption ? gMemory : undefined,
+			memory: !gMemory ? undefined : gMemory,
 		}
-		return VectorDBQAChain.fromLLM(model, vectorStore, vectorOptions)
+		return VectorDBQAChain.fromLLM(gModel, vectorStore, vectorOptions)
 	} catch (error) {
 		console.error('An error occurred while getting vector chain:', error)
 		throw error
 	}
 }
 
-function getLLMChain(model, memoryOption = false) {
-	return new ConversationChain({ llm: model, memory: memoryOption ? gMemory : undefined })
+function getLLMChain() {
+	gCallType = 'query'
+	return new ConversationChain({
+		llm: gModel,
+		memory: !gMemory ? undefined : gMemory,
+	})
 }
 
 async function initializeVars(
@@ -72,6 +77,12 @@ async function initializeVars(
 	queryVector = false,
 	memoryOption = false
 ) {
+	const newOptions = { temperature, streaming, queryVector, memoryOption }
+
+	if (utilService.shallowEqual(gOptions, newOptions)) return
+
+	gOptions = newOptions
+
 	const llmOptions = {
 		modelName: LLM_MODEL,
 		temperature,
@@ -86,9 +97,7 @@ async function initializeVars(
 					},
 			  ],
 	}
-	gMemory = !memoryOption ? false : MEMORY_TYPE
-	gModel = new OpenAI(llmOptions)
-	gChain = !queryVector
-		? getLLMChain(gModel, memoryOption)
-		: await getConversationalRetrievalChain(gModel, memoryOption)
+	gMemory = !memoryOption ? null : MEMORY_TYPE
+	gModel = new ChatOpenAI(llmOptions)
+	gChain = !queryVector ? getLLMChain() : await getConversationalRetrievalChain()
 }
